@@ -1,0 +1,130 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        }
+
+        .container {
+            background: white;
+            width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+            font-size: 15px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4e54c8;
+        }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #4e54c8;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #3942b8;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .happy {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .sad {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>😊 Sentiment Analysis</h1>
+
+        <form action="/predict" method="POST">
+            <label>Enter your text:</label>
+
+            <textarea
+                name="text"
+                rows="8"
+                placeholder="Type your text here..."
+                required></textarea>
+
+            <button type="submit">Analyze Sentiment</button>
+        </form>
+
+        {% if result is not none %}
+            {% if result == 1 %}
+                <div class="result happy">
+                    🎉 Positive Sentiment (Happy)
+                </div>
+            {% elif result == 0 %}
+                <div class="result sad">
+                    😔 Negative Sentiment (Sad)
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+</body>
+</html>
+```
