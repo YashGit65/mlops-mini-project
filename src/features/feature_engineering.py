@@ -4,25 +4,14 @@ import pandas as pd
 import os
 from sklearn.feature_extraction.text import CountVectorizer
 import yaml
-import logging
 import pickle
 
+from utils.logger import get_logger
+
 # logging configuration
-logger = logging.getLogger('feature_engineering')
-logger.setLevel('DEBUG')
+logger = get_logger('data_transformation')
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel('DEBUG')
 
-file_handler = logging.FileHandler('feature_engineering_errors.log')
-file_handler.setLevel('ERROR')
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
 
 def load_params(params_path: str) -> dict:
     """Load parameters from a YAML file."""

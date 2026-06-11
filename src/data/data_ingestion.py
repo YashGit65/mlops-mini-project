@@ -4,24 +4,11 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 import yaml
-import logging
+from utils.logger import get_logger
 
 # logging configuration
-logger = logging.getLogger('data_ingestion')
-logger.setLevel('DEBUG')
+logger = get_logger('data_ingestion')
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel('DEBUG')
-
-file_handler = logging.FileHandler('errors.log')
-file_handler.setLevel('ERROR')
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
 
 def load_params(params_path: str) -> dict:
     """Load parameters from a YAML file."""

@@ -6,29 +6,14 @@ import os
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import pickle
+from utils.setup_mlflow import setup_mlflow_tracking
 
 class TestModelLoading(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Set up DagsHub credentials for MLflow tracking
-        dagshub_token = os.getenv("DAGSHUB_PAT")
-
-        if not dagshub_token:
-            raise EnvironmentError(
-                "DAGSHUB_PAT environment variable is not set"
-            )
-
-        os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-        os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
-
-        dagshub_url = "https://dagshub.com"
-        repo_owner = "YashGit65"
-        repo_name = "mlops-mini-project"
-
-        mlflow.set_tracking_uri(
-            f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
-        )
+        
+        setup_mlflow_tracking()
         
         # Load the new model from MLflow model registry
         cls.new_model_name = "my_model"

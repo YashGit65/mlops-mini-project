@@ -5,24 +5,12 @@ import pandas as pd
 import pickle
 from sklearn.linear_model import LogisticRegression
 import yaml
-import logging
+from utils.logger import get_logger
 
 # logging configuration
-logger = logging.getLogger('model_building')
-logger.setLevel('DEBUG')
+logger = get_logger('model_building')
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel('DEBUG')
 
-file_handler = logging.FileHandler('model_building_errors.log')
-file_handler.setLevel('ERROR')
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
 
 def load_data(file_path: str) -> pd.DataFrame:
     """Load data from a CSV file."""

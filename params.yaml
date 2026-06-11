@@ -3,7 +3,7 @@ data_ingestion:
   test_size: 0.30
 
 feature_engineering:
-  max_features: 4000
+  max_features: 1000
 
 model:
   name: my_model

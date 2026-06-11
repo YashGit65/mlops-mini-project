@@ -2,30 +2,18 @@
 
 import json
 import mlflow
-import logging
 from dotenv import load_dotenv
 import os
 import yaml
+import dagshub
+from utils.logger import get_logger
+from utils.setup_mlflow import setup_mlflow_tracking
 
 load_dotenv()
-import dagshub
 
 # logging configuration
-logger = logging.getLogger('model_registration')
-logger.setLevel('DEBUG')
+logger = get_logger('model_registration')
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel('DEBUG')
-
-file_handler = logging.FileHandler('model_registration_errors.log')
-file_handler.setLevel('ERROR')
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
 
 def load_params(file_path: str = "params.yaml") -> dict:
     with open(file_path, "r") as file:
@@ -33,35 +21,6 @@ def load_params(file_path: str = "params.yaml") -> dict:
 print('parms.yaml_loaded for registrationmodel')    
     
 
-def setup_mlflow_tracking() -> None:
-    """Set up DagsHub credentials for MLflow tracking."""
-    try:
-        dagshub_token = os.getenv("DAGSHUB_PAT")
-
-        if not dagshub_token:
-            raise EnvironmentError(
-                "DAGSHUB_PAT environment variable is not set"
-            )
-
-        os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-        os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
-
-        dagshub_url = "https://dagshub.com"
-        repo_owner = "YashGit65"
-        repo_name = "mlops-mini-project"
-
-        mlflow.set_tracking_uri(
-            f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
-        )
-
-        logger.info("MLflow tracking configured successfully.")
-
-    except Exception as e:
-        logger.error(
-            "Failed to initialize DagsHub MLflow tracking: %s",
-            e
-        )
-        raise
 
 def load_model_info(file_path: str) -> dict:
     """Load the model info from a JSON file."""
@@ -90,8 +49,10 @@ def register_model(model_name: str, model_info: dict):
         
         # Transition the model to "Staging" stage
         client = mlflow.tracking.MlflowClient()
+        
         params = load_params()
         model_stage = params["model"]["stage"]
+        
         client.transition_model_version_stage(
             name=model_name,
             version=model_version.version,
