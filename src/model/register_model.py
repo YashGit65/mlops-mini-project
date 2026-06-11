@@ -3,7 +3,11 @@
 import json
 import mlflow
 import logging
+from dotenv import load_dotenv
 import os
+import yaml
+
+load_dotenv()
 import dagshub
 
 # logging configuration
@@ -22,6 +26,12 @@ file_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
+
+def load_params(file_path: str = "params.yaml") -> dict:
+    with open(file_path, "r") as file:
+        return yaml.safe_load(file)
+print('parms.yaml_loaded for registrationmodel')    
+    
 
 def setup_mlflow_tracking() -> None:
     """Set up DagsHub credentials for MLflow tracking."""
@@ -80,10 +90,12 @@ def register_model(model_name: str, model_info: dict):
         
         # Transition the model to "Staging" stage
         client = mlflow.tracking.MlflowClient()
+        params = load_params()
+        model_stage = params["model"]["stage"]
         client.transition_model_version_stage(
             name=model_name,
             version=model_version.version,
-            stage="Production"
+            stage=model_stage
         )
         
         logger.debug(f'Model {model_name} version {model_version.version} registered and transitioned to Staging.')
@@ -98,7 +110,8 @@ def main():
         model_info_path = 'reports/experiment_info.json'
         model_info = load_model_info(model_info_path)
         
-        model_name = "my_model"
+        params = load_params()
+        model_name = params["model"]["name"]
         register_model(model_name, model_info)
     except Exception as e:
         logger.error('Failed to complete the model registration process: %s', e)
