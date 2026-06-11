@@ -7,4 +7,4 @@ feature_engineering:
 
 model:
   name: my_model
-  stage: Production  
+  stage: Staging  
