@@ -2,6 +2,15 @@
 
 import os
 import mlflow
+import yaml
+from dotenv import load_dotenv
+load_dotenv()
+
+def load_params(file_path: str = "params.yaml") -> dict:
+    with open(file_path, "r") as file:
+        return yaml.safe_load(file)
+print('parms.yaml_loaded for registrationmodel')
+
 
 def promote_model():
     # Set up DagsHub credentials for MLflow tracking
@@ -24,8 +33,11 @@ def promote_model():
     )
 
     client = mlflow.MlflowClient()
+    
+    params = load_params()
+    model_name = params["scripts"]["name"]
 
-    model_name = "my_model"
+    
     # Get the latest version in staging
     latest_version_staging = client.get_latest_versions(model_name, stages=["Staging"])[0].version
 

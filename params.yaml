@@ -8,3 +8,6 @@ feature_engineering:
 model:
   name: my_model
   stage: Staging  
+
+scripts:
+  name: my_model  
