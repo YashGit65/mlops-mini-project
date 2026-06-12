@@ -8,6 +8,11 @@ import nltk
 import string
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from pathlib import Path
+import sys
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT_DIR))
 from utils.logger import get_logger
 
 # logging configuration

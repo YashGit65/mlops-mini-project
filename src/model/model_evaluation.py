@@ -10,7 +10,41 @@ import mlflow.sklearn
 import dagshub
 from dotenv import load_dotenv
 import os
-from utils.setup_mlflow import setup_mlflow_tracking
+from pathlib import Path
+import sys
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT_DIR))
+
+def setup_mlflow_tracking() -> None:
+    """Set up DagsHub credentials for MLflow tracking."""
+    try:
+        dagshub_token = os.getenv("DAGSHUB_PAT")
+
+        if not dagshub_token:
+            raise EnvironmentError(
+                "DAGSHUB_PAT environment variable is not set"
+            )
+
+        os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+        os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+
+        dagshub_url = "https://dagshub.com"
+        repo_owner = "YashGit65"
+        repo_name = "mlops-mini-project"
+
+        mlflow.set_tracking_uri(
+            f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
+        )
+
+        logger.info("MLflow tracking configured successfully.")
+
+    except Exception as e:
+        logger.error(
+            "Failed to initialize DagsHub MLflow tracking: %s",
+            e
+        )
+        raise
 
 load_dotenv()
 
@@ -133,8 +167,7 @@ def main():
             # Log the model info file to MLflow
             mlflow.log_artifact('reports/experiment_info.json')
 
-            # Log the evaluation errors log file to MLflow
-            mlflow.log_artifact('model_evaluation_errors.log')
+            #
     except Exception as e:
         logger.error('Failed to complete the model evaluation process: %s', e)
         print(f"Error: {e}")

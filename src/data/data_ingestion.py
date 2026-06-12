@@ -4,6 +4,12 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 import yaml
+from pathlib import Path
+import sys
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT_DIR))
+
 from utils.logger import get_logger
 
 # logging configuration

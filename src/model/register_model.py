@@ -6,8 +6,13 @@ from dotenv import load_dotenv
 import os
 import yaml
 import dagshub
+from pathlib import Path
+import sys
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT_DIR))
 from utils.logger import get_logger
-from utils.setup_mlflow import setup_mlflow_tracking
+
 
 load_dotenv()
 
@@ -19,6 +24,36 @@ def load_params(file_path: str = "params.yaml") -> dict:
     with open(file_path, "r") as file:
         return yaml.safe_load(file)
 print('parms.yaml_loaded for registrationmodel')    
+
+def setup_mlflow_tracking() -> None:
+    """Set up DagsHub credentials for MLflow tracking."""
+    try:
+        dagshub_token = os.getenv("DAGSHUB_PAT")
+
+        if not dagshub_token:
+            raise EnvironmentError(
+                "DAGSHUB_PAT environment variable is not set"
+            )
+
+        os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+        os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+
+        dagshub_url = "https://dagshub.com"
+        repo_owner = "YashGit65"
+        repo_name = "mlops-mini-project"
+
+        mlflow.set_tracking_uri(
+            f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
+        )
+
+        logger.info("MLflow tracking configured successfully.")
+
+    except Exception as e:
+        logger.error(
+            "Failed to initialize DagsHub MLflow tracking: %s",
+            e
+        )
+        raise
     
 
 

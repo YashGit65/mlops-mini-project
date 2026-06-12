@@ -5,6 +5,11 @@ import os
 from sklearn.feature_extraction.text import CountVectorizer
 import yaml
 import pickle
+from pathlib import Path
+import sys
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT_DIR))
 
 from utils.logger import get_logger
 

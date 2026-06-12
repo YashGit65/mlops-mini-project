@@ -14,6 +14,8 @@ import nltk
 import string
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from dotenv import load_dotenv
+load_dotenv()
 
 def lemmatization(text):
     """Lemmatize the text."""
@@ -68,13 +70,20 @@ def normalize_text(text):
     return text
 
 
+# Set up DagsHub credentials for MLflow tracking
+dagshub_token = os.getenv("DAGSHUB_PAT")
+if not dagshub_token:
+    raise EnvironmentError("DAGSHUB_PAT environment variable is not set")
 
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-import dagshub
-import mlflow
+dagshub_url = "https://dagshub.com"
+repo_owner = "YashGit65"
+repo_name = "mlops-mini-project"
 
-mlflow.set_tracking_uri('https://dagshub.com/YashGit65/mlops-mini-project.mlflow')
-dagshub.init(repo_owner='YashGit65', repo_name='mlops-mini-project', mlflow=True)
+# Set up MLflow tracking URI
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 
 app = Flask(__name__)
 
@@ -90,7 +99,10 @@ model_name = "my_model"
 model_version = get_latest_model_version(model_name)
 
 model_uri = f'models:/{model_name}/{model_version}'
+
+print("Loading model...")
 model = mlflow.pyfunc.load_model(model_uri)
+print("Model loaded!")
 
 vectorizer = pickle.load(open('models/vectorizer.pkl','rb'))
 
