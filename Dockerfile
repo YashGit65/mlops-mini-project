@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY flask/ /app/
+COPY flask_app/ /app/
 
 COPY models/vectorizer.pkl /app/models/vectorizer.pkl
 
