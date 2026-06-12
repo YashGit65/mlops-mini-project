@@ -1,5 +1,5 @@
 import unittest
-from flask.app import app
+from flask_app.app import app
 
 class FlaskAppTests(unittest.TestCase):
 
